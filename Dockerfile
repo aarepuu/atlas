@@ -54,10 +54,13 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN groupadd hadoop && \
 	useradd -m -d /opt/atlas -g hadoop atlas
 
+USER atlas
 RUN cd /opt \
 	&& tar xzf /apache-atlas.tar.gz -C /opt/atlas --strip-components=1
 
+USER root
 RUN rm -rf /apache-atlas.tar.gz
+USER atlas
 
 RUN cd /opt/atlas/bin \
     && ./atlas_start.py -setup || true
