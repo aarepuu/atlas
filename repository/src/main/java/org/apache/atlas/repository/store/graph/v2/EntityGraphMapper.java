@@ -194,7 +194,10 @@ public class EntityGraphMapper {
             LOG.debug("==> createShellEntityVertex({})", objectId.getTypeName());
         }
 
-        final String    guid       = UUID.randomUUID().toString();
+        String guid = objectId.getGuid();
+        if (!AtlasTypeUtil.isAssignedGuid(guid)) {
+            guid = UUID.randomUUID().toString();
+        }
         AtlasEntityType entityType = typeRegistry.getEntityTypeByName(objectId.getTypeName());
         AtlasVertex     ret        = createStructVertex(objectId);
 
@@ -223,6 +226,11 @@ public class EntityGraphMapper {
         GraphTransactionInterceptor.addToVertexCache(guid, ret);
 
         return ret;
+    }
+
+    public AtlasVertex createShellEntityVertex(AtlasEntity entity, EntityGraphDiscoveryContext context) throws AtlasBaseException {
+        AtlasObjectId objectId = new AtlasObjectId(entity.getGuid(), entity.getTypeName(), entity.getAttributes());
+        return createShellEntityVertex(objectId, context);
     }
 
     public AtlasVertex createVertexWithGuid(AtlasEntity entity, String guid) throws AtlasBaseException {
@@ -492,6 +500,7 @@ public class EntityGraphMapper {
         }
 
         if (MapUtils.isNotEmpty(updatedBusinessAttributes)) {
+            updateModificationMetadata(entityVertex);
             entityChangeNotifier.onBusinessAttributesUpdated(AtlasGraphUtilsV2.getIdFromVertex(entityVertex), updatedBusinessAttributes);
         }
 
@@ -550,6 +559,7 @@ public class EntityGraphMapper {
         }
 
         if (MapUtils.isNotEmpty(updatedBusinessAttributes)) {
+            updateModificationMetadata(entityVertex);
             entityChangeNotifier.onBusinessAttributesUpdated(AtlasGraphUtilsV2.getIdFromVertex(entityVertex), updatedBusinessAttributes);
         }
 
@@ -593,6 +603,7 @@ public class EntityGraphMapper {
         }
 
         if (MapUtils.isNotEmpty(updatedBusinessAttributes)) {
+            updateModificationMetadata(entityVertex);
             entityChangeNotifier.onBusinessAttributesUpdated(AtlasGraphUtilsV2.getIdFromVertex(entityVertex), updatedBusinessAttributes);
         }
 
@@ -1450,7 +1461,7 @@ public class EntityGraphMapper {
         }
 
         if (isReference && !isSoftReference) {
-            boolean isAppendOnPartialUpdate = getAppendOptionForRelationship(ctx.getReferringVertex(), attribute.getName());
+            boolean isAppendOnPartialUpdate = RequestContext.get().isMigrationInProgress() || getAppendOptionForRelationship(ctx.getReferringVertex(), attribute.getName());
 
             if (isAppendOnPartialUpdate) {
                 allArrayElements = unionCurrentAndNewElements(attribute, (List) currentElements, (List) newElementsCreated);
@@ -2247,6 +2258,12 @@ public class EntityGraphMapper {
     }
 
     private boolean classificationHasPendingTask(AtlasTask task, String classificationVertexId, String entityGuid) {
+        if (task.getParameters() == null
+                || task.getParameters().get(ClassificationTask.PARAM_CLASSIFICATION_VERTEX_ID) == null
+                || task.getParameters().get(ClassificationTask.PARAM_ENTITY_GUID) == null) {
+            return false;
+        }
+
         return task.getParameters().get(ClassificationTask.PARAM_CLASSIFICATION_VERTEX_ID).equals(classificationVertexId)
                 && task.getParameters().get(ClassificationTask.PARAM_ENTITY_GUID).equals(entityGuid);
     }
