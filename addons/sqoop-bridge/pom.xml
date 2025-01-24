@@ -79,6 +79,7 @@
             <groupId>org.apache.sqoop</groupId>
             <artifactId>sqoop</artifactId>
             <version>${sqoop.version}</version>
+            <classifier>${sqoop.classifier}</classifier>
             <scope>compile</scope>
         </dependency>
         <!-- Logging -->
@@ -95,6 +96,13 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.atlas</groupId>
+            <artifactId>sqoop-bridge-shim</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -119,7 +127,6 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
-
         </dependency>
 
         <dependency>
@@ -160,7 +167,6 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
-
         </dependency>
 
         <dependency>

@@ -33,7 +33,9 @@
     <description>Apache Atlas Hbase Bridge Module</description>
 
     <properties>
+        <apache.log4j.version>2.17.1</apache.log4j.version>
         <hadoop.version>3.0.3</hadoop.version>
+        <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <jetty.version>9.3.14.v20161028</jetty.version>
     </properties>
 
@@ -178,6 +180,12 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.atlas</groupId>
+            <artifactId>hbase-bridge-shim</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Logging -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
@@ -200,6 +208,12 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-bundle</artifactId>
             <version>${jersey.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>${javax.ws.rs-api.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -257,6 +271,18 @@
             <artifactId>hbase-zookeeper</artifactId>
             <version>${hbase.version}</version>
             <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${apache.log4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${apache.log4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

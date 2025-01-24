@@ -88,6 +88,9 @@
         <avro.version>1.7.5</avro.version>
         <calcite.version>1.16.0</calcite.version>
         <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+        <checkstyle.plugin.version>3.1.0</checkstyle.plugin.version>
+        <checkstyle.skip>true</checkstyle.skip>
+        <checkstyle.version>8.29</checkstyle.version>
         <codehaus.woodstox.stax2-api.version>3.1.4</codehaus.woodstox.stax2-api.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-codec.version>1.14</commons-codec.version>
@@ -117,7 +120,7 @@
         <guice.version>4.1.0</guice.version>
         <hadoop.hdfs-client.version>${hadoop.version}</hadoop.hdfs-client.version>
         <hadoop.version>3.3.6</hadoop.version>
-        <hbase.version>2.6.0</hbase.version>
+        <hbase.version>2.5.0</hbase.version>
         <hive.version>3.1.3</hive.version>
         <hppc.version>0.8.1</hppc.version>
         <httpcomponents-httpclient.version>4.5.13</httpcomponents-httpclient.version>
@@ -150,7 +153,7 @@
         <lucene-solr.version>8.11.3</lucene-solr.version>
         <maven-plugin-sortpom.version>3.0.1</maven-plugin-sortpom.version>
         <maven-site-plugin.version>3.7</maven-site-plugin.version>
-        <netty.version>4.1.100.Final</netty.version>
+        <netty.version>4.1.115.Final</netty.version>
         <node-for-v2.version>v12.16.0</node-for-v2.version>
         <npm-for-v2.version>6.13.7</npm-for-v2.version>
         <okio.version>3.4.0</okio.version>
@@ -177,7 +180,8 @@
         <spray.version>1.3.1</spray.version>
         <spring.security.version>5.8.15</spring.security.version>
         <spring.version>5.3.39</spring.version>
-        <sqoop.version>1.4.6.2.3.99.0-195</sqoop.version>
+        <sqoop.classifier>hadoop260</sqoop.classifier>
+        <sqoop.version>1.4.7</sqoop.version>
         <storm.version>2.4.0</storm.version>
         <surefire.forkCount>2C</surefire.forkCount>
         <surefire.version>3.0.0-M5</surefire.version>
@@ -1152,19 +1156,13 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>3.4.0</version>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.rat</groupId>
                     <artifactId>apache-rat-plugin</artifactId>
                     <version>0.13</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.9.1</version>
                 </plugin>
 
                 <plugin>
@@ -1440,6 +1438,7 @@
                         <exclude>debian/**</exclude>
                         <exclude>.svn/**</exclude>
                         <exclude>.git/**</exclude>
+                        <exclude>.github/pull_request_template.md</exclude>
                         <exclude>.gitignore</exclude>
                         <exclude>**/.idea/**</exclude>
                         <exclude>**/*.twiki</exclude>
@@ -1503,7 +1502,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.plugin.version}</version>
                 <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
                     <dependency>
                         <groupId>org.apache.atlas</groupId>
                         <artifactId>atlas-buildtools</artifactId>
@@ -1518,10 +1523,11 @@
                         </goals>
                         <phase>verify</phase>
                         <configuration>
-                            <skip>${skipCheck}</skip>
-                            <consoleOutput>false</consoleOutput>
+                            <consoleOutput>true</consoleOutput>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                            <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                            <configLocation>./dev-support/checkstyle.xml</configLocation>
+                            <suppressionsLocation>./dev-support/checkstyle-suppressions.xml</suppressionsLocation>
+                            <skip>${checkstyle.skip}</skip>
                             <failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
                         </configuration>
                     </execution>
@@ -2227,14 +2233,6 @@
             </snapshots>
             <id>central</id>
             <url>https://repo1.maven.org/maven2</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>hortonworks.repo</id>
-            <name>Hortonworks Repo</name>
-            <url>https://repo.hortonworks.com/content/repositories/releases</url>
         </repository>
         <repository>
             <snapshots>
