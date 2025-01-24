@@ -244,6 +244,19 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- added -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.2.0</version>
+        </dependency>
+        <!-- added -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.8</version>
+        </dependency>
+
         <!-- Test dependencies -->
 
         <dependency>

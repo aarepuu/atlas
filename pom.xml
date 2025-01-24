@@ -53,9 +53,11 @@
         <module>addons/storm-bridge</module>
         <module>addons/storm-bridge-shim</module>
         <module>atlas-examples</module>
+
         <module>authorization</module>
         <module>build-tools</module>
         <module>client</module>
+
         <module>common</module>
         <module>dashboardv2</module>
         <module>dashboardv3</module>
@@ -145,14 +147,17 @@
         <junit.version>4.13.2</junit.version>
         <kafka.scala.binary.version>2.12</kafka.scala.binary.version>
         <kafka.version>2.8.2</kafka.version>
-        <keycloak.version>6.0.1</keycloak.version>
+        <keycloak.version>15.0.2.1</keycloak.version>
         <logback.version>1.3.14</logback.version>
         <lucene-solr.version>8.11.3</lucene-solr.version>
-        <maven-plugin-sortpom.version>3.0.1</maven-plugin-sortpom.version>
+        <!-- <maven-plugin-sortpom.version>3.0.1</maven-plugin-sortpom.version> -->
         <maven-site-plugin.version>3.7</maven-site-plugin.version>
         <netty.version>4.1.100.Final</netty.version>
         <node-for-v2.version>v12.16.0</node-for-v2.version>
         <npm-for-v2.version>6.13.7</npm-for-v2.version>
+        <!-- added -->
+        <okhttp3.version>4.10.0</okhttp3.version>
+
         <okio.version>3.4.0</okio.version>
         <opencsv.version>5.0</opencsv.version>
         <paranamer.version>2.7</paranamer.version>
@@ -164,6 +169,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <projectBaseDir>${project.basedir}</projectBaseDir>
         <protobuf-java.version>3.25.5</protobuf-java.version>
+        <!-- added -->
+        <retrofit.version>2.9.0</retrofit.version>
+
         <skipCheck>false</skipCheck>
         <skipDocs>true</skipDocs>
         <skipEnunciate>false</skipEnunciate>
@@ -185,6 +193,8 @@
         <tinkerpop.version>3.7.0</tinkerpop.version>
         <woodstox-core.version>5.0.3</woodstox-core.version>
         <zookeeper.version>3.9.2</zookeeper.version>
+        <!-- added -->
+        <micrometer.version>1.11.1</micrometer.version>
     </properties>
 
     <dependencyManagement>
@@ -218,12 +228,34 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
+                <!-- added -->
+                <exclusions>
+                    <exclusion> 
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion> 
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions> 
             </dependency>
 
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
                 <version>${logback.version}</version>
+                <!-- added -->
+                <exclusions>
+                    <exclusion> 
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion> 
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions> 
             </dependency>
 
             <dependency>
@@ -1065,11 +1097,11 @@
 
         <pluginManagement>
             <plugins>
-                <plugin>
+                <!-- <plugin>
                     <groupId>com.github.ekryd.sortpom</groupId>
                     <artifactId>sortpom-maven-plugin</artifactId>
                     <version>${maven-plugin-sortpom.version}</version>
-                </plugin>
+                </plugin> -->
                 <!-- support for enforcement of maven & Java versions -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -1152,7 +1184,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>3.3.2</version>
                 </plugin>
 
                 <plugin>
@@ -1231,7 +1263,7 @@
         </pluginManagement>
 
         <plugins>
-            <plugin>
+            <!-- <plugin>
                 <groupId>com.github.ekryd.sortpom</groupId>
                 <artifactId>sortpom-maven-plugin</artifactId>
                 <version>${maven-plugin-sortpom.version}</version>
@@ -1257,7 +1289,7 @@
                         <phase>validate</phase>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
             <!-- enforcement of maven version 3.5.0 or above & Java 8 (151) or above -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
