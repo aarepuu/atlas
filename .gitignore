@@ -79,3 +79,5 @@ distro/solr/*.tgz
 
 # webapp
 /webapp/overlays/
+
+/intg/bin
