@@ -41,10 +41,10 @@
 
     <dependencies>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <!-- added -->
+            
             <exclusions>
                     <exclusion> 
                         <groupId>org.slf4j</groupId>
@@ -55,7 +55,7 @@
                         <artifactId>log4j</artifactId>
                     </exclusion>
             </exclusions> 
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -260,6 +260,13 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+        <!-- added -->
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+          <version>${log4j2.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-client</artifactId>
@@ -416,10 +423,10 @@
             <artifactId>mockito-all</artifactId>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
-        </dependency>
+        </dependency> -->
         <!-- Required for Spring configuration processing -->
         <dependency>
             <groupId>org.springframework</groupId>
