@@ -195,6 +195,10 @@
         <zookeeper.version>3.9.2</zookeeper.version>
         <!-- added -->
         <micrometer.version>1.11.1</micrometer.version>
+        <!-- added -->
+        <reload4j.version>1.2.19</reload4j.version>
+        <!-- added -->
+        <log4j2.version>2.17.1</log4j2.version>
     </properties>
 
     <dependencyManagement>
@@ -224,11 +228,10 @@
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
+            <!-- <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
-                <!-- added -->
                 <exclusions>
                     <exclusion> 
                         <groupId>org.slf4j</groupId>
@@ -239,7 +242,7 @@
                         <artifactId>log4j</artifactId>
                     </exclusion>
                 </exclusions> 
-            </dependency>
+            </dependency> -->
 
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -921,29 +924,57 @@
                 <version>3.0.0</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jul-to-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>log4j-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
             <!-- Logging -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+                <!-- added -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>${slf4j.version}</version>
+                <exclusions>
+                <!-- added -->
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+                <!-- added -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency> -->
+
+            <!-- added -->
+            <dependency>
+                <groupId>ch.qos.reload4j</groupId>
+                <artifactId>reload4j</artifactId>
+                <version>${reload4j.version}</version>
             </dependency>
 
             <!-- Fix for cassandra-all tranitive dependency CVE-2017-18640 : https://nvd.nist.gov/vuln/detail/CVE-2017-18640 -->
