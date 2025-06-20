@@ -53,6 +53,7 @@ import org.apache.atlas.repository.ogm.ExportImportAuditEntryDTO;
 import org.apache.atlas.repository.ogm.glossary.AtlasGlossaryCategoryDTO;
 import org.apache.atlas.repository.ogm.glossary.AtlasGlossaryDTO;
 import org.apache.atlas.repository.ogm.glossary.AtlasGlossaryTermDTO;
+import org.apache.atlas.repository.ogm.impexp.AtlasAsyncImportRequestDTO;
 import org.apache.atlas.repository.ogm.metrics.AtlasMetricsStatDTO;
 import org.apache.atlas.repository.ogm.profiles.AtlasSavedSearchDTO;
 import org.apache.atlas.repository.ogm.profiles.AtlasUserProfileDTO;
@@ -66,6 +67,7 @@ import org.apache.atlas.repository.store.graph.v2.AtlasTypeDefGraphStoreV2;
 import org.apache.atlas.repository.store.graph.v2.BulkImporterImpl;
 import org.apache.atlas.repository.store.graph.v2.EntityGraphMapper;
 import org.apache.atlas.repository.store.graph.v2.IAtlasEntityChangeNotifier;
+import org.apache.atlas.repository.store.graph.v2.asyncimport.ImportTaskListener;
 import org.apache.atlas.repository.store.graph.v2.tasks.ClassificationPropagateTaskFactory;
 import org.apache.atlas.runner.LocalSolrRunner;
 import org.apache.atlas.service.Service;
@@ -87,7 +89,6 @@ import static org.apache.atlas.graph.GraphSandboxUtil.useLocalSolr;
 
 @Test(enabled = false)
 public class TestModules {
-
     static class MockNotifier implements Provider<AtlasEntityChangeNotifier> {
         @Override
         public AtlasEntityChangeNotifier get() {
@@ -97,26 +98,12 @@ public class TestModules {
 
     // Test only DI modules
     public static class TestOnlyModule extends AbstractModule {
-
         private static final Logger LOG = LoggerFactory.getLogger(TestOnlyModule.class);
 
-        static class AtlasConfigurationProvider implements Provider<Configuration> {
-
-            @Override
-            public Configuration get() {
-                try {
-                    return ApplicationProperties.get();
-                } catch (AtlasException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
-        static class AtlasGraphProvider implements Provider<AtlasGraph> {
-            @Override
-            public AtlasGraph get() {
-                return org.apache.atlas.repository.graph.AtlasGraphProvider.getGraphInstance();
-            }
+        @Singleton
+        @Provides
+        public List<TypeDefChangeListener> getTypeDefChangeListenerList(GraphBackedSearchIndexer indexer) {
+            return Arrays.asList(indexer);
         }
 
         @Override
@@ -146,6 +133,7 @@ public class TestModules {
             bind(ExportService.class).asEagerSingleton();
 
             bind(SearchTracker.class).asEagerSingleton();
+            bind(ImportTaskListener.class).toInstance(Mockito.mock(ImportTaskListener.class));
 
             bind(AtlasEntityStore.class).to(AtlasEntityStoreV2.class);
             bind(AtlasRelationshipStore.class).to(AtlasRelationshipStoreV2.class);
@@ -179,6 +167,7 @@ public class TestModules {
             availableDTOs.addBinding().to(ExportImportAuditEntryDTO.class);
             availableDTOs.addBinding().to(AtlasAuditEntryDTO.class);
             availableDTOs.addBinding().to(AtlasMetricsStatDTO.class);
+            availableDTOs.addBinding().to(AtlasAsyncImportRequestDTO.class);
 
             bind(DTORegistry.class).asEagerSingleton();
             bind(DataAccess.class).asEagerSingleton();
@@ -195,24 +184,35 @@ public class TestModules {
             bindInterceptor(Matchers.any(), Matchers.annotatedWith(GraphTransaction.class), graphTransactionInterceptor);
         }
 
-        @Singleton
-        @Provides
-        public List<TypeDefChangeListener> getTypeDefChangeListenerList(GraphBackedSearchIndexer indexer) {
-            return Arrays.asList(indexer);
-        }
-
         protected void bindAuditRepository(Binder binder) {
-
             Class<? extends EntityAuditRepository> auditRepoImpl = AtlasRepositoryConfiguration.getAuditRepositoryImpl();
 
             //Map EntityAuditRepository interface to configured implementation
             binder.bind(EntityAuditRepository.class).to(auditRepoImpl).asEagerSingleton();
 
-            if(Service.class.isAssignableFrom(auditRepoImpl)) {
-                Class<? extends Service> auditRepoService = (Class<? extends Service>)auditRepoImpl;
+            if (Service.class.isAssignableFrom(auditRepoImpl)) {
+                Class<? extends Service> auditRepoService = (Class<? extends Service>) auditRepoImpl;
                 //if it's a service, make sure that it gets properly closed at shutdown
                 Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder, Service.class);
                 serviceBinder.addBinding().to(auditRepoService);
+            }
+        }
+
+        static class AtlasConfigurationProvider implements Provider<Configuration> {
+            @Override
+            public Configuration get() {
+                try {
+                    return ApplicationProperties.get();
+                } catch (AtlasException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        static class AtlasGraphProvider implements Provider<AtlasGraph> {
+            @Override
+            public AtlasGraph get() {
+                return org.apache.atlas.repository.graph.AtlasGraphProvider.getGraphInstance();
             }
         }
     }

@@ -32,6 +32,8 @@
     <description>Apache Atlas Web Application</description>
 
     <properties>
+        <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+        <checkstyle.skip>false</checkstyle.skip>
         <debug.jetty.daemon>true</debug.jetty.daemon>
         <logback.configurationFile>file:///${project.build.directory}/../../distro/src/conf/atlas-logback.xml</logback.configurationFile>
         <projectBaseDir>${project.basedir}/..</projectBaseDir>
@@ -162,6 +164,11 @@
         <dependency>
             <groupId>org.apache.atlas</groupId>
             <artifactId>atlas-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.atlas</groupId>
+            <artifactId>atlas-dashboard</artifactId>
+            <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.apache.atlas</groupId>
@@ -408,6 +415,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-core</artifactId>
+            <version>${spring-ldap-core.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
         </dependency>
@@ -420,6 +433,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-ldap</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.ldap</groupId>
+                    <artifactId>spring-ldap-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -496,6 +515,10 @@
                     <archiveClasses>true</archiveClasses>
                     <attachClasses>true</attachClasses>
                     <overlays>
+                        <overlay>
+                            <groupId>org.apache.atlas</groupId>
+                            <artifactId>atlas-dashboard</artifactId>
+                        </overlay>
                         <overlay>
                             <groupId>org.apache.atlas</groupId>
                             <artifactId>atlas-dashboardv2</artifactId>

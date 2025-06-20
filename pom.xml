@@ -57,6 +57,7 @@
         <module>build-tools</module>
         <module>client</module>
         <module>common</module>
+        <module>dashboard</module>
         <module>dashboardv2</module>
         <module>dashboardv3</module>
 
@@ -99,7 +100,7 @@
         <commons-conf.version>1.10</commons-conf.version>
         <commons-conf2.version>2.10.1</commons-conf2.version>
         <commons-el.version>1.0</commons-el.version>
-        <commons-io.version>2.11.0</commons-io.version>
+        <commons-io.version>2.17.0</commons-io.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-logging.version>1.1.3</commons-logging.version>
         <commons-text.version>1.10.0</commons-text.version>
@@ -149,18 +150,21 @@
         <kafka.scala.binary.version>2.12</kafka.scala.binary.version>
         <kafka.version>2.8.2</kafka.version>
         <keycloak.version>6.0.1</keycloak.version>
-        <logback.version>1.3.14</logback.version>
+        <logback.version>1.3.15</logback.version>
         <lucene-solr.version>8.11.3</lucene-solr.version>
         <maven-plugin-sortpom.version>3.0.1</maven-plugin-sortpom.version>
         <maven-site-plugin.version>3.7</maven-site-plugin.version>
-        <netty.version>4.1.115.Final</netty.version>
+        <netty.version>4.1.118.Final</netty.version>
+        <node-for-v1.version>v22.14.0</node-for-v1.version>
         <node-for-v2.version>v12.16.0</node-for-v2.version>
+        <npm-for-v1.version>10.9.2</npm-for-v1.version>
         <npm-for-v2.version>6.13.7</npm-for-v2.version>
         <okio.version>3.4.0</okio.version>
         <opencsv.version>5.0</opencsv.version>
         <paranamer.version>2.7</paranamer.version>
         <poi-ooxml.version>5.2.2</poi-ooxml.version>
         <poi.version>5.2.2</poi.version>
+        <project.build.dashboard.gruntBuild>run build</project.build.dashboard.gruntBuild>
         <project.build.dashboardv2.gruntBuild>build-minify</project.build.dashboardv2.gruntBuild>
         <project.build.dashboardv3.gruntBuild>build-minify</project.build.dashboardv3.gruntBuild>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -178,6 +182,7 @@
         <solr-test-framework.version>8.11.3</solr-test-framework.version>
         <solr.version>8.11.3</solr.version>
         <spray.version>1.3.1</spray.version>
+        <spring-ldap-core.version>2.4.4</spring-ldap-core.version>
         <spring.security.version>5.8.15</spring.security.version>
         <spring.version>5.3.39</spring.version>
         <sqoop.classifier>hadoop260</sqoop.classifier>
@@ -435,6 +440,13 @@
                 <groupId>org.apache.atlas</groupId>
                 <artifactId>atlas-common</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.atlas</groupId>
+                <artifactId>atlas-dashboard</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
             </dependency>
 
             <dependency>

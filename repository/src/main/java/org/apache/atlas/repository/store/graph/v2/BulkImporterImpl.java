@@ -37,12 +37,14 @@ import org.apache.atlas.type.AtlasEntityType;
 import org.apache.atlas.type.AtlasTypeRegistry;
 import org.apache.atlas.type.Constants;
 import org.apache.atlas.utils.AtlasStringUtil;
+import org.apache.atlas.v1.typesystem.types.utils.TypesUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+
 import java.util.List;
 import java.util.Set;
 
@@ -50,56 +52,32 @@ import static org.apache.atlas.repository.Constants.HISTORICAL_GUID_PROPERTY_KEY
 
 @Component
 public class BulkImporterImpl implements BulkImporter {
-    private static final Logger LOG = LoggerFactory.getLogger(AtlasEntityStoreV2.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BulkImporterImpl.class);
 
-    private final AtlasEntityStore entityStore;
-    private final AtlasGraph atlasGraph;
-    private AtlasTypeRegistry typeRegistry;
+    private static final double TOLERANCE   = 0.000001;
+    private static final int    MAX_PERCENT = 100;
+
+    private final AtlasEntityStore  entityStore;
+    private final AtlasGraph        atlasGraph;
+    private final AtlasTypeRegistry typeRegistry;
 
     @Inject
     public BulkImporterImpl(AtlasGraph atlasGraph, AtlasEntityStore entityStore, AtlasTypeRegistry typeRegistry) {
-        this.atlasGraph = atlasGraph;
-        this.entityStore = entityStore;
+        this.atlasGraph   = atlasGraph;
+        this.entityStore  = entityStore;
         this.typeRegistry = typeRegistry;
-    }
-
-    @Override
-    public EntityMutationResponse bulkImport(EntityImportStream entityStream, AtlasImportResult importResult) throws AtlasBaseException {
-        ImportStrategy importStrategy = null;
-
-        if (AtlasStringUtil.hasOption(importResult.getRequest().getOptions(), AtlasImportRequest.OPTION_KEY_MIGRATION)) {
-            importStrategy = new MigrationImport(this.atlasGraph, new AtlasGraphProvider(), this.typeRegistry);
-        } else {
-            importStrategy = new RegularImport(this.atlasGraph, this.entityStore, this.typeRegistry);
-        }
-
-        LOG.info("BulkImportImpl: {}", importStrategy.getClass().getSimpleName());
-        return importStrategy.run(entityStream, importResult);
-    }
-
-    @VisibleForTesting
-    static String getJsonArray(String json, String vertexGuid) {
-        String quotedGuid = String.format("\"%s\"", vertexGuid);
-        if (StringUtils.isEmpty(json)) {
-            json = String.format("[%s]", quotedGuid);
-        } else {
-            json = json.replace("]", "").concat(",").concat(quotedGuid).concat("]");
-        }
-        return json;
     }
 
     @VisibleForTesting
     public static float updateImportProgress(Logger log, long currentIndex, long streamSize, float currentPercent, String additionalInfo) {
-        final double tolerance   = 0.000001;
-        final int    MAX_PERCENT = 100;
+        long maxSize = (currentIndex <= streamSize) ? streamSize : currentIndex;
 
-        long     maxSize        = (currentIndex <= streamSize) ? streamSize : currentIndex;
         if (maxSize <= 0) {
             return currentPercent;
         }
 
         float   percent        = (float) ((currentIndex * MAX_PERCENT) / maxSize);
-        boolean updateLog      = Double.compare(percent, currentPercent) > tolerance;
+        boolean updateLog      = Double.compare(percent, currentPercent) > TOLERANCE;
         float   updatedPercent = (MAX_PERCENT < maxSize) ? percent : ((updateLog) ? ++currentPercent : currentPercent);
 
         if (updateLog) {
@@ -125,15 +103,16 @@ public class BulkImporterImpl implements BulkImporter {
     }
 
     public static void updateVertexGuid(AtlasGraph atlasGraph, AtlasTypeRegistry typeRegistry, EntityGraphRetriever entityGraphRetriever, AtlasEntity entity) {
-        String entityGuid = entity.getGuid();
-        AtlasObjectId objectId = entityGraphRetriever.toAtlasObjectIdWithoutGuid(entity);
-
+        String          entityGuid = entity.getGuid();
+        AtlasObjectId   objectId   = entityGraphRetriever.toAtlasObjectIdWithoutGuid(entity);
         AtlasEntityType entityType = typeRegistry.getEntityTypeByName(entity.getTypeName());
-        String vertexGuid = null;
+        String          vertexGuid;
+
         try {
             vertexGuid = AtlasGraphUtilsV2.getGuidByUniqueAttributes(atlasGraph, entityType, objectId.getUniqueAttributes());
         } catch (AtlasBaseException e) {
             LOG.warn("Entity: {}: Does not exist!", objectId);
+
             return;
         }
 
@@ -142,6 +121,7 @@ public class BulkImporterImpl implements BulkImporter {
         }
 
         AtlasVertex v = AtlasGraphUtilsV2.findByGuid(atlasGraph, vertexGuid);
+
         if (v == null) {
             return;
         }
@@ -156,5 +136,43 @@ public class BulkImporterImpl implements BulkImporter {
         String existingJson = AtlasGraphUtilsV2.getProperty(v, HISTORICAL_GUID_PROPERTY_KEY, String.class);
 
         AtlasGraphUtilsV2.setProperty(v, HISTORICAL_GUID_PROPERTY_KEY, getJsonArray(existingJson, vertexGuid));
+    }
+
+    @VisibleForTesting
+    static String getJsonArray(String json, String vertexGuid) {
+        String quotedGuid = String.format("\"%s\"", vertexGuid);
+
+        if (StringUtils.isEmpty(json)) {
+            json = String.format("[%s]", quotedGuid);
+        } else {
+            json = json.replace("]", "").concat(",").concat(quotedGuid).concat("]");
+        }
+
+        return json;
+    }
+
+    @Override
+    public EntityMutationResponse bulkImport(EntityImportStream entityStream, AtlasImportResult importResult) throws AtlasBaseException {
+        ImportStrategy importStrategy;
+
+        if (AtlasStringUtil.hasOption(importResult.getRequest().getOptions(), AtlasImportRequest.OPTION_KEY_MIGRATION)) {
+            importStrategy = new MigrationImport(this.atlasGraph, new AtlasGraphProvider(), this.typeRegistry);
+        } else {
+            importStrategy = new RegularImport(this.atlasGraph, this.entityStore, this.typeRegistry);
+        }
+
+        LOG.info("BulkImportImpl: {}", importStrategy.getClass().getSimpleName());
+
+        return importStrategy.run(entityStream, importResult);
+    }
+
+    @Override
+    public TypesUtil.Pair<EntityMutationResponse, Float> asyncImport(AtlasEntity.AtlasEntityWithExtInfo entityWithExtInfo, EntityMutationResponse entityMutationResponse, AtlasImportResult importResult, Set<String> processedGuids,
+                                                                     List<String> failedGuids, int entityPosition, int totalEntities, float importProgress) throws AtlasBaseException {
+        ImportStrategy importStrategy = new RegularImport(this.atlasGraph, this.entityStore, this.typeRegistry);
+
+        LOG.info("BulkImportImpl.asyncImport(): {}", importStrategy.getClass().getSimpleName());
+
+        return importStrategy.run(entityWithExtInfo, entityMutationResponse, importResult, processedGuids, entityPosition, totalEntities, importProgress, failedGuids);
     }
 }

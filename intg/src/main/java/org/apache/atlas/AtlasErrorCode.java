@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
+
 import java.text.MessageFormat;
 import java.util.Arrays;
 
@@ -72,15 +73,15 @@ public enum AtlasErrorCode {
     BAD_REQUEST(400, "ATLAS-400-00-029", "{0}"),
     PARAMETER_PARSING_FAILED(400, "ATLAS-400-00-02A", "Parameter parsing failed at: {0}"),
     MISSING_MANDATORY_ATTRIBUTE(400, "ATLAS-400-00-02B", "Mandatory field {0}.{1} has empty/null value"),
-    RELATIONSHIPDEF_INSUFFICIENT_ENDS(400,  "ATLAS-400-00-02C", "relationshipDef {0} creation attempted without 2 ends"),
-    RELATIONSHIPDEF_DOUBLE_CONTAINERS(400,  "ATLAS-400-00-02D", "relationshipDef {0} creation attempted with both ends as containers"),
-    RELATIONSHIPDEF_UNSUPPORTED_ATTRIBUTE_TYPE(400,  "ATLAS-400-00-02F", "Cannot set an Attribute with type {0} on relationship def {1}, as it is not a primitive type "),
-    RELATIONSHIPDEF_ASSOCIATION_AND_CONTAINER(400,  "ATLAS-400-00-030", "ASSOCIATION relationshipDef {0} creation attempted with an end specifying isContainer"),
-    RELATIONSHIPDEF_COMPOSITION_NO_CONTAINER(400,  "ATLAS-400-00-031", "COMPOSITION relationshipDef {0} creation attempted without an end specifying isContainer"),
-    RELATIONSHIPDEF_AGGREGATION_NO_CONTAINER(400,  "ATLAS-400-00-032", "AGGREGATION relationshipDef {0} creation attempted without an end specifying isContainer"),
-    RELATIONSHIPDEF_COMPOSITION_MULTIPLE_PARENTS(400,  "ATLAS-400-00-033", "COMPOSITION relationshipDef {0} can only have one parent; so cannot have SET cardinality on children"),
-    RELATIONSHIPDEF_LIST_ON_END(400,  "ATLAS-400-00-034", "relationshipDef {0} cannot have a LIST cardinality on an end"),
-    RELATIONSHIPDEF_INVALID_END_TYPE(400,  "ATLAS-400-00-035", "relationshipDef {0} has invalid end type {1}"),
+    RELATIONSHIPDEF_INSUFFICIENT_ENDS(400, "ATLAS-400-00-02C", "relationshipDef {0} creation attempted without 2 ends"),
+    RELATIONSHIPDEF_DOUBLE_CONTAINERS(400, "ATLAS-400-00-02D", "relationshipDef {0} creation attempted with both ends as containers"),
+    RELATIONSHIPDEF_UNSUPPORTED_ATTRIBUTE_TYPE(400, "ATLAS-400-00-02F", "Cannot set an Attribute with type {0} on relationship def {1}, as it is not a primitive type "),
+    RELATIONSHIPDEF_ASSOCIATION_AND_CONTAINER(400, "ATLAS-400-00-030", "ASSOCIATION relationshipDef {0} creation attempted with an end specifying isContainer"),
+    RELATIONSHIPDEF_COMPOSITION_NO_CONTAINER(400, "ATLAS-400-00-031", "COMPOSITION relationshipDef {0} creation attempted without an end specifying isContainer"),
+    RELATIONSHIPDEF_AGGREGATION_NO_CONTAINER(400, "ATLAS-400-00-032", "AGGREGATION relationshipDef {0} creation attempted without an end specifying isContainer"),
+    RELATIONSHIPDEF_COMPOSITION_MULTIPLE_PARENTS(400, "ATLAS-400-00-033", "COMPOSITION relationshipDef {0} can only have one parent; so cannot have SET cardinality on children"),
+    RELATIONSHIPDEF_LIST_ON_END(400, "ATLAS-400-00-034", "relationshipDef {0} cannot have a LIST cardinality on an end"),
+    RELATIONSHIPDEF_INVALID_END_TYPE(400, "ATLAS-400-00-035", "relationshipDef {0} has invalid end type {1}"),
     INVALID_RELATIONSHIP_END_TYPE(400, "ATLAS-400-00-036", "invalid relationshipDef: {0}: end type 1: {1}, end type 2: {2}"),
     RELATIONSHIPDEF_INVALID_END1_UPDATE(400, "ATLAS-400-00-037", "invalid update for relationshipDef {0}: new end1 {1}, existing end1 {2}"),
     RELATIONSHIPDEF_INVALID_END2_UPDATE(400, "ATLAS-400-00-038", "invalid update for relationshipDef {0}: new end2 {1}, existing end2 {2}"),
@@ -100,12 +101,12 @@ public enum AtlasErrorCode {
     CLASSIFICATIONDEF_INVALID_ENTITYTYPES(400, "ATLAS-400-00-052", "ClassificationDef ‘{0}‘ has invalid ‘{1}‘ in entityTypes"),
     CLASSIFICATIONDEF_PARENTS_ENTITYTYPES_DISJOINT(400, "ATLAS-400-00-053", "ClassificationDef ‘{0}‘ has supertypes whose entityTypes are disjoint; e.g. 2 supertypes that are not related by inheritance specify different non empty entityType lists. This means the child cannot honour the restrictions specified in both parents."),
     CLASSIFICATIONDEF_ENTITYTYPES_NOT_PARENTS_SUBSET(400, "ATLAS-400-00-054", "ClassificationDef ‘{0}‘ has entityTypes ‘{1}‘ which are not subsets of it's supertypes entityTypes"),
-    INVALID_ENTITY_FOR_CLASSIFICATION (400, "ATLAS-400-00-055", "Entity (guid=‘{0}‘,typename=‘{1}‘) cannot be classified by Classification ‘{2}‘, because ‘{1}‘ is not in the ClassificationDef's restrictions."),
+    INVALID_ENTITY_FOR_CLASSIFICATION(400, "ATLAS-400-00-055", "Entity (guid=‘{0}‘,typename=‘{1}‘) cannot be classified by Classification ‘{2}‘, because ‘{1}‘ is not in the ClassificationDef's restrictions."),
     SAVED_SEARCH_CHANGE_USER(400, "ATLAS-400-00-056", "saved-search {0} can not be moved from user {1} to {2}"),
-    INVALID_QUERY_PARAM_LENGTH(400, "ATLAS-400-00-057" , "Length of query param {0} exceeds the limit"),
-    INVALID_QUERY_LENGTH(400, "ATLAS-400-00-058" , "Invalid query length, update {0} to change the limit" ),
+    INVALID_QUERY_PARAM_LENGTH(400, "ATLAS-400-00-057", "Length of query param {0} exceeds the limit"),
+    INVALID_QUERY_LENGTH(400, "ATLAS-400-00-058", "Invalid query length, update {0} to change the limit"),
     // DSL related error codes
-    INVALID_DSL_QUERY(400, "ATLAS-400-00-059" , "Invalid DSL query: {0} | Reason: {1}. Please refer to Atlas DSL grammar for more information" ),
+    INVALID_DSL_QUERY(400, "ATLAS-400-00-059", "Invalid DSL query: {0} | Reason: {1}. Please refer to Atlas DSL grammar for more information"),
     INVALID_DSL_GROUPBY(400, "ATLAS-400-00-05A", "DSL Semantic Error - GroupBy attribute {0} is non-primitive"),
     INVALID_DSL_UNKNOWN_TYPE(400, "ATLAS-400-00-05B", "DSL Semantic Error - {0} type not found"),
     INVALID_DSL_UNKNOWN_CLASSIFICATION(400, "ATLAS-400-00-05C", "DSL Semantic Error - {0} classification not found"),
@@ -168,7 +169,7 @@ public enum AtlasErrorCode {
     BUSINESS_METADATA_ATTRIBUTE_DOES_NOT_EXIST(400, "ATLAS-400-00-096", "Business-metadata attribute does not exist in entity: {0}"),
     BUSINESS_METADATA_ATTRIBUTE_ALREADY_EXISTS(400, "ATLAS-400-00-097", "Business-metadata attribute already exists in entity: {0}"),
     INVALID_FILE_TYPE(400, "ATLAS-400-00-098", "The provided file type: {0} is not supported. Expected file formats are .csv and .xls."),
-    INVALID_BUSINESS_ATTRIBUTES_IMPORT_DATA(400, "ATLAS-400-00-099","The uploaded file was not processed due to following errors : {0}"),
+    INVALID_BUSINESS_ATTRIBUTES_IMPORT_DATA(400, "ATLAS-400-00-099", "The uploaded file was not processed due to following errors : {0}"),
     ATTRIBUTE_NAME_INVALID_CHARS(400, "ATLAS-400-00-09A", "{0}: invalid name. Attribute names must begin with a letter followed by a sequence of letters, numbers, or '_' characters"),
     NO_DATA_FOUND(400, "ATLAS-400-00-09B", "No data found in the uploaded file"),
     NOT_VALID_FILE(400, "ATLAS-400-00-09C", "Invalid {0} file"),
@@ -177,6 +178,10 @@ public enum AtlasErrorCode {
     IMPORT_INVALID_ZIP_ENTRY(400, "ATLAS-400-00-09F", "{0}: invalid zip entry. Reason: {1}"),
     LINEAGE_ON_DEMAND_NOT_ENABLED(400, "ATLAS-400-00-100", "Lineage on demand config: {0} is not enabled"),
     INVALID_TOPIC_NAME(400, "ATLAS-400-00-101", "Unsupported topic name : {0}"),
+    UNSUPPORTED_TYPE_NAME(400, "ATLAS-400-00-102", "Unsupported {0} name. Names such as 'description','version','options','name','servicetype' are not supported"),
+    INVALID_OPERATOR(400, "ATLAS-400-00-103", "Invalid operator specified for attribute: {0}"),
+    BLANK_NAME_ATTRIBUTE(400, "ATLAS-400-00-104", "Name Attribute can't be empty!"),
+    BLANK_VALUE_ATTRIBUTE(400, "ATLAS-400-00-105", "Value Attribute can't be empty!"),
 
     UNAUTHORIZED_ACCESS(403, "ATLAS-403-00-001", "{0} is not authorized to perform {1}"),
 
@@ -203,6 +208,7 @@ public enum AtlasErrorCode {
     FILE_NAME_NOT_FOUND(404, "ATLAS-404-00-014", "File name should not be blank"),
     NO_TYPE_NAME_ON_VERTEX(404, "ATLAS-404-00-015", "No typename found for given entity with guid: {0}"),
     NO_LINEAGE_CONSTRAINTS_FOR_GUID(404, "ATLAS-404-00-016", "No lineage constraints found for requested entity with guid : {0}"),
+    IMPORT_NOT_FOUND(404, "ATLAS-404-00-017", "Import id {0} is not found"),
 
     METHOD_NOT_ALLOWED(405, "ATLAS-405-00-001", "Error 405 - The request method {0} is inappropriate for the URL: {1}"),
 
@@ -221,6 +227,7 @@ public enum AtlasErrorCode {
     GLOSSARY_IMPORT_FAILED(409, "ATLAS-409-00-011", "Glossary import failed"),
     METRICSSTAT_ALREADY_EXISTS(409, "ATLAS-409-00-012", "Metric Statistics already collected at {0}"),
     PENDING_TASKS_ALREADY_IN_PROGRESS(409, "ATLAS-409-00-013", "There are already {0} pending tasks in queue"),
+    IMPORT_ABORT_NOT_ALLOWED(409, "ATLAS-409-00-016", "Import id {0} is currently in state {1}, cannot be aborted"),
 
     // All internal errors go here
     INTERNAL_ERROR(500, "ATLAS-500-00-001", "Internal server error {0}"),
@@ -245,32 +252,36 @@ public enum AtlasErrorCode {
     FAILED_TO_UPLOAD(500, "ATLAS-500-00-015", "Error occurred while uploading the file: {0}"),
     FAILED_TO_CREATE_GLOSSARY_TERM(500, "ATLAS-500-00-016", "Error occurred while creating glossary term: {0}"),
     FAILED_TO_UPDATE_GLOSSARY_TERM(500, "ATLAS-500-00-017", "Error occurred while updating glossary term: {0}"),
-    NOTIFICATION_EXCEPTION(500, "ATLAS-500-00-018", "{0}");
-
-    private String errorCode;
-    private String errorMessage;
-    private Response.Status httpCode;
+    NOTIFICATION_EXCEPTION(500, "ATLAS-500-00-018", "{0}"),
+    IMPORT_UPDATE_FAILED(500, "ATLAS-500-00-019", "Failed to update import with id={0}"),
+    IMPORT_REGISTRATION_FAILED(500, "ATLAS-500-00-020", "Failed to register import request"),
+    IMPORT_FAILED(500, "ATLAS-500-00-021", "Import with id {0} failed"),
+    ABORT_IMPORT_FAILED(500, "ATLAS-500-00-022", "Failed to abort import with id {0}"),
+    IMPORT_QUEUEING_FAILED(500, "ATLAS-500-00-023", "Failed to add import with id {0} to request queue, please try again later");
 
     private static final Logger LOG = LoggerFactory.getLogger(AtlasErrorCode.class);
+    private final        String errorCode;
+    private final        String errorMessage;
+    private final Response.Status httpCode;
 
     AtlasErrorCode(int httpCode, String errorCode, String errorMessage) {
-        this.httpCode = Response.Status.fromStatusCode(httpCode);
-        this.errorCode = errorCode;
+        this.httpCode     = Response.Status.fromStatusCode(httpCode);
+        this.errorCode    = errorCode;
         this.errorMessage = errorMessage;
-
     }
 
     public String getFormattedErrorMessage(String... params) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug(String.format("<== AtlasErrorCode.getMessage(%s)", Arrays.toString(params)));
+            LOG.debug("<== AtlasErrorCode.getMessage({})", Arrays.toString(params));
         }
 
-        MessageFormat mf = new MessageFormat(errorMessage);
-        String result = mf.format(params);
+        MessageFormat mf     = new MessageFormat(errorMessage);
+        String        result = mf.format(params);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(String.format("==> AtlasErrorCode.getMessage(%s): %s", Arrays.toString(params), result));
+            LOG.debug("==> AtlasErrorCode.getMessage({}): {}", Arrays.toString(params), result);
         }
+
         return result;
     }
 
