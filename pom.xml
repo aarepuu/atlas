@@ -59,7 +59,7 @@
         <module>client</module>
 
         <module>common</module>
-        <module>dashboard</module>
+        <!-- <module>dashboard</module> -->
         <module>dashboardv2</module>
         <module>dashboardv3</module>
 
@@ -947,11 +947,11 @@
                 <version>${jacoco.version}</version>
             </dependency>
 
-            <dependency>
+            <!-- <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
                 <version>${slf4j.version}</version>
-            </dependency>
+            </dependency> -->
 
             <!-- <dependency>
                 <groupId>org.slf4j</groupId>
@@ -1120,6 +1120,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
 
     </dependencies>
