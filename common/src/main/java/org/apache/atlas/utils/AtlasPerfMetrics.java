@@ -18,6 +18,8 @@
 
 package org.apache.atlas.utils;
 
+
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -32,12 +34,8 @@ public class AtlasPerfMetrics {
 
     public void recordMetric(MetricRecorder recorder) {
         if (recorder != null) {
-            final String name      = recorder.name;
-            final long   timeTaken = recorder.getElapsedTime();
-
-            if (startTimeMs == -1) {
-                startTimeMs = System.currentTimeMillis();
-            }
+            final String name = recorder.name;
+            final long timeTaken = recorder.getElapsedTime();
 
             Metric metric = metrics.computeIfAbsent(name, Metric::new);
 
@@ -48,8 +46,6 @@ public class AtlasPerfMetrics {
 
     public void clear() {
         metrics.clear();
-
-        startTimeMs = -1;
     }
 
     public boolean isEmpty() {
@@ -64,6 +60,10 @@ public class AtlasPerfMetrics {
         return metrics.get(name);
     }
 
+    public boolean hasMetric(String name) {
+        return metrics.containsKey(name);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -75,7 +75,7 @@ public class AtlasPerfMetrics {
                 sb.append("\"").append(metric.getName()).append("\":{\"count\":").append(metric.getInvocations()).append(",\"timeTaken\":").append(metric.getTotalTimeMSecs()).append("},");
             }
 
-            sb.append("\"totalTime\":").append(System.currentTimeMillis() - startTimeMs);
+            sb.setLength(sb.length() - 1); // remove last ","
         }
 
         sb.append("}");
@@ -83,31 +83,9 @@ public class AtlasPerfMetrics {
         return sb.toString();
     }
 
-    public static class Metric {
+    public class MetricRecorder {
         private final String name;
-        private       short  invocations;
-        private       long   totalTimeMSecs;
-
-        public Metric(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public short getInvocations() {
-            return invocations;
-        }
-
-        public long getTotalTimeMSecs() {
-            return totalTimeMSecs;
-        }
-    }
-
-    public static class MetricRecorder {
-        private final String name;
-        private final long   startTimeMs = System.currentTimeMillis();
+        private final long startTimeMs = System.currentTimeMillis();
 
         MetricRecorder(String name) {
             this.name = name;
@@ -116,5 +94,54 @@ public class AtlasPerfMetrics {
         long getElapsedTime() {
             return System.currentTimeMillis() - startTimeMs;
         }
+    }
+
+    public static class Metric {
+        private final String name;
+
+        private AtlasMetricType metricType;
+        private long invocations = 0;
+        private long totalTimeMSecs = 0;
+        HashMap<String, String> tags = new HashMap<>();
+
+        public Metric(String name) {
+            this.name = name;
+        }
+
+        public void setMetricType(AtlasMetricType metricType) {
+            this.metricType = metricType;
+        }
+
+        public AtlasMetricType getMetricType() {
+            return metricType;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public long getInvocations() {
+            return invocations;
+        }
+
+        public void setTotalTimeMSecs(long totalTimeMSecs) {
+            this.totalTimeMSecs = totalTimeMSecs;
+        }
+
+        public long getTotalTimeMSecs() {
+            return totalTimeMSecs;
+        }
+
+        public void addTag(String key, String value) {
+            tags.put(key, value);
+        }
+        public HashMap<String, String> getTags() {
+            return tags;
+        }
+
+        public void incrementInvocations() {
+            invocations++;
+        }
+
     }
 }

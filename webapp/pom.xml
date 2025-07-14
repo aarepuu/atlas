@@ -41,14 +41,36 @@
 
     <dependencies>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        </dependency>
+            
+            <exclusions>
+                    <exclusion> 
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion> 
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+            </exclusions> 
+        </dependency> -->
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
+            <!-- added -->
+            <exclusions>
+                    <exclusion> 
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion> 
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+            </exclusions> 
         </dependency>
 
         <dependency>
@@ -238,6 +260,13 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+        <!-- added -->
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+          <version>${log4j2.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-client</artifactId>
@@ -335,7 +364,7 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.8.9</version>
+            <version>1.9.8</version>
         </dependency>
 
         <dependency>
@@ -394,10 +423,10 @@
             <artifactId>mockito-all</artifactId>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
-        </dependency>
+        </dependency> -->
         <!-- Required for Spring configuration processing -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -532,12 +561,12 @@
                         </overlay>
                     </overlays>
 
-                    <webResources>
+                    <!-- <webResources>
                         <resource>
                             <directory>${project.build.directory}/api/v2/apidocs/ui</directory>
                             <targetPath>apidocs</targetPath>
                         </resource>
-                    </webResources>
+                    </webResources> -->
 
                     <archive>
                         <manifest>
