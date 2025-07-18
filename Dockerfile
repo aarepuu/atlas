@@ -67,7 +67,7 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 COPY ./distro/target/apache-atlas-${VERSION}-server.tar.gz /apache-atlas.tar.gz
 
 RUN groupadd atlas && \
-	useradd -m -d /opt/atlas -g atlas atlas
+	useradd -m -d /opt/atlas -s /bin/bash -g atlas atlas
 
 USER atlas
 RUN cd /opt \
