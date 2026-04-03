@@ -45,8 +45,14 @@
 FROM scratch
 FROM ubuntu:22.04
 ARG VERSION=3.0.0-SNAPSHOT
+ARG ATLAS_BASE_JAVA_VERSION=8
+# Declare TARGETARCH (auto-set by BuildKit)
+ARG TARGETARCH
 
 # COPY --from=stage-atlas /apache-atlas.tar.gz /apache-atlas.tar.gz
+
+ENV JAVA_HOME=/usr/lib/jvm/java-${ATLAS_BASE_JAVA_VERSION}-openjdk-${TARGETARCH}
+RUN echo $JAVA_HOME
 
 RUN apt-get update \
     && apt-get -y upgrade \
@@ -59,7 +65,7 @@ RUN apt-get update \
         net-tools \
         curl \
     && cd / \
-    && export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-arm64" \
+    && export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-${TARGETARCH}" \
     && apt-get clean 
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
